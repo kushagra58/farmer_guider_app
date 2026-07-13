@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Guider AI</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            grid-column: span 2;
+            padding: 12px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #219653;
+        }
+
+        .results-box {
+            margin-top: 40px;
+            border-top: 2px solid #ecf0f1;
+            padding-top: 20px;
+        }
+
+        .cluster-banner {
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .rec-card {
+            background: #fafafa;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .rec-card h3 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+
+        .error {
+            color: #c0392b;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>👨‍🌾 Farmer Guider AI App</h1>
+        <form method="POST">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="N">Nitrogen (N) Content:</label>
+                    <input type="number" step="any" name="N" value="{{ input_data.get('N','') }}" required
+                        placeholder="e.g. 90">
+                </div>
+                <div class="form-group">
+                    <label for="P">Phosphorus (P) Content:</label>
+                    <input type="number" step="any" name="P" value="{{ input_data.get('P','') }}" required
+                        placeholder="e.g. 42">
+                </div>
+                <div class="form-group">
+                    <label for="K">Potassium (K) Content:</label>
+                    <input type="number" step="any" name="K" value="{{ input_data.get('K','') }}" required
+                        placeholder="e.g. 43">
+                </div>
+                <div class="form-group">
+                    <label for="temperature">Temperature (°C):</label>
+                    <input type="number" step="any" name="temperature" value="{{ input_data.get('temperature','') }}"
+                        required placeholder="e.g. 25.6">
+                </div>
+                <div class="form-group">
+                    <label for="humidity">Relative Humidity (%):</label>
+                    <input type="number" step="any" name="humidity" value="{{ input_data.get('humidity','') }}" required
+                        placeholder="e.g. 82.0">
+                </div>
+                <div class="form-group">
+                    <label for="ph">Soil pH Value:</label>
+                    <input type="number" step="any" name="ph" value="{{ input_data.get('ph','') }}" required
+                        placeholder="e.g. 6.5">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label for="rainfall">Rainfall (mm):</label>
+                    <input type="number" step="any" name="rainfall" value="{{ input_data.get('rainfall','') }}" required
+                        placeholder="e.g. 202.6">
+                </div>
+                <button type="submit">Analyze Conditions & Guide Farmer</button>
+            </div>
+        </form>
+
+        {% if prediction_made %}
+        <div class="results-box">
+            <h2>Analysis Results</h2>
+            {% if result.error %}
+            <p class="error">{{ result.error }}</p>
+            {% else %}
+            <div class="cluster-banner">
+                Assigned Group: Cluster ID #{{ result.cluster_num }} <br>
+                <small>Zone Profile: {{ result.profile }}</small>
+            </div>
+
+            <div class="rec-card">
+                <h3>💧 Irrigation Advice</h3>
+                <p>{{ result.irrigation }}</p>
+            </div>
+
+            <div class="rec-card">
+                <h3>🌱 Fertilizer Suggestion</h3>
+                <p>{{ result.fertilizer }}</p>
+            </div>
+
+            <div class="rec-card">
+                <h3>🚜 Soil Management Tips</h3>
+                <p>{{ result.soil_management }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+
+</html>
